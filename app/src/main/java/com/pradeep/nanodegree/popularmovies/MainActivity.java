@@ -5,6 +5,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/*
+ * @author: Pradeep Kiran Chakkirala
+ *          krnprdp (at) gmail (dot) com
+ *          Created on 8/9/15.
+ *
+ * MainActivity Loads the PopularMoviesFragment and also the MovieDetailsFragment.
+ *
+ * Please do not forget to add the API Key in tmdb.java More information can be seen in that class.
+ *
+ *
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
