@@ -10,12 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by Pradeep on 8/9/15.
@@ -24,6 +29,9 @@ public class PopularMoviesFragment extends Fragment {
 
     String api_key;
     String sort_order;
+    private String[] titles = null;
+    private String[] posters = null;
+    private ArrayList<Movie> movies;
     String LOG_TAG = getClass().getSimpleName();
 
     @Override
@@ -32,6 +40,7 @@ public class PopularMoviesFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             this.api_key = args.getString("api_key");
+
         } else
             this.api_key = null;
     }
@@ -40,7 +49,7 @@ public class PopularMoviesFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_popularmovies, container, false);
 
         if (api_key != null) {
-
+            new fetchMovies().execute("POPULARITY");
         } else {
             Toast.makeText(getActivity(), "API Key is Missing.\n" +
                     "Please add a valid key in tmdb.java and recompile", Toast.LENGTH_SHORT).show();
@@ -51,15 +60,14 @@ public class PopularMoviesFragment extends Fragment {
     }
 
     class fetchMovies extends AsyncTask<String, Void, String> {
+
+        private String LOG_TAG = this.getClass().getSimpleName();
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -128,6 +136,50 @@ public class PopularMoviesFragment extends Fragment {
 
             return jsonResponse;
         }
+
+        @Override
+        protected void onPostExecute(String jsonResponse) {
+            super.onPostExecute(jsonResponse);
+
+            if (jsonResponse != null) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(jsonResponse);
+                    JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+                    titles = new String[jsonArray.length()];
+                    posters = new String[jsonArray.length()];
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject movie = jsonArray.getJSONObject(i);
+
+                        String BASE_URL = "http://image.tmdb.org/t/p/";
+                        String SIZE_PARAM = "w185/";
+                        Uri uri = Uri.parse(BASE_URL).buildUpon()
+                                .appendEncodedPath(SIZE_PARAM)
+                                .appendEncodedPath(movie.getString("poster_path"))
+                                .build();
+
+                        movies.add(new Movie(movie.getString("id"), movie.getString("title"), uri.toString(),
+                                movie.getString("vote_average"), movie.getString("release_date"),
+                                movie.getString("overview")));
+
+                        titles[i] = movies.get(i).getTitle();
+                        posters[i] = movies.get(i).getPoster();
+                        Log.d(LOG_TAG, movies.get(i).toString());
+                    }
+
+
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, e.toString());
+                }
+
+            }
+
+
+        }
+
     }
 
 
