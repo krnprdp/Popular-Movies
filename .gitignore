@@ -5,4 +5,4 @@
 .DS_Store
 /build
 /captures
-/app/src/main/java/com/pradeep/nanodegree/popularmovies/tmdb.java 
+#/app/src/main/java/com/pradeep/nanodegree/popularmovies/tmdb.java 
