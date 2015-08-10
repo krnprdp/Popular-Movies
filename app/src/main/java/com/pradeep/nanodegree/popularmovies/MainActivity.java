@@ -11,6 +11,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PopularMoviesFragment fragment = new PopularMoviesFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("api_key", tmdb.getKey());
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
+
     }
 
 

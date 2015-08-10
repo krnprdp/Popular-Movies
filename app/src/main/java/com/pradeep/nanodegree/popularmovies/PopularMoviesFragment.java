@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * Created by Pradeep on 8/9/15.
@@ -12,9 +13,15 @@ import android.view.ViewGroup;
 public class PopularMoviesFragment extends Fragment {
     String api_key;
 
-    public PopularMoviesFragment() {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        this.api_key = args.getString("api_key");
+        if (args != null) {
+            this.api_key = args.getString("api_key");
+
+        } else
+            this.api_key = "NULL ??";
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
