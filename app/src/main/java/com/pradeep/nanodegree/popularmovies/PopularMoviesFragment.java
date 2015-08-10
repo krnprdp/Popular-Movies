@@ -1,5 +1,6 @@
 package com.pradeep.nanodegree.popularmovies;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +25,9 @@ import java.util.ArrayList;
 
 /**
  * Created by Pradeep on 8/9/15.
+ *
+ * This fragment makes the API call and loads the Top Movies using a custom Adapter.
+ *
  */
 public class PopularMoviesFragment extends Fragment {
 
@@ -33,6 +37,7 @@ public class PopularMoviesFragment extends Fragment {
     private String[] posters = null;
     private ArrayList<Movie> movies;
     String LOG_TAG = getClass().getSimpleName();
+    Boolean flag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,13 +48,42 @@ public class PopularMoviesFragment extends Fragment {
 
         } else
             this.api_key = null;
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            movies = new ArrayList<Movie>();
+            flag = false;
+        } else {
+            movies = savedInstanceState.getParcelableArrayList("movies");
+            flag = true;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("movies", movies);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_popularmovies, container, false);
 
         if (api_key != null) {
-            new fetchMovies().execute("POPULARITY");
+
+            if (!flag) {
+                new fetchMovies().execute("POPULARITY"); //TODO: USE A SORT ORDER PARAMETER
+
+            } else {
+                if (movies.size() != 0) {
+                    titles = new String[movies.size()];
+                    posters = new String[movies.size()];
+                    for (int i = 0; i < movies.size(); i++) {
+                        titles[i] = movies.get(i).getTitle();
+                        posters[i] = movies.get(i).getPoster();
+                    }
+                }
+            }
+
+
         } else {
             Toast.makeText(getActivity(), "API Key is Missing.\n" +
                     "Please add a valid key in tmdb.java and recompile", Toast.LENGTH_SHORT).show();
@@ -61,11 +95,17 @@ public class PopularMoviesFragment extends Fragment {
 
     class fetchMovies extends AsyncTask<String, Void, String> {
 
+        private ProgressDialog progressdialog;
         private String LOG_TAG = this.getClass().getSimpleName();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            String title = getResources().getString(R.string.progress_title);
+            String message = getResources().getString(R.string.progress_message);
+
+            progressdialog = ProgressDialog.show(getActivity(), title, message);
+
         }
 
 
@@ -75,7 +115,7 @@ public class PopularMoviesFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String jsonResponse = null;
-            StringBuffer stringBuffer = null;
+            StringBuffer stringBuffer;
 
             String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
             String SORT_PARAM = "sort_by";
@@ -175,9 +215,10 @@ public class PopularMoviesFragment extends Fragment {
                     Log.e(LOG_TAG, e.toString());
                 }
 
+
             }
 
-
+            progressdialog.dismiss();
         }
 
     }
