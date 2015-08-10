@@ -14,7 +14,7 @@ package com.pradeep.nanodegree.popularmovies;
 
 public class tmdb {
 
-    private static String api_key = " "; /* Place Your API Key here */
+    private static String api_key = ""; /* Place Your API Key here */
 
     static String getKey() {
         return api_key;
