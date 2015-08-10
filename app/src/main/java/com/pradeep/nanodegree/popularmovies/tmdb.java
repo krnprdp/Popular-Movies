@@ -9,7 +9,7 @@ package com.pradeep.nanodegree.popularmovies;
  * <p/>
  * Due to copyright reasons, it is illegal to share API KEY publicly.
  * <p/>
- * You can generate you API KEY at https://www.themoviedb.org/documentation/api
+ * You can generate your API KEY at https://www.themoviedb.org/documentation/api
  */
 
 public class tmdb {
