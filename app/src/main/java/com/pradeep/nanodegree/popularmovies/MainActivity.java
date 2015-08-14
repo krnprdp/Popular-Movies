@@ -1,5 +1,6 @@
 package com.pradeep.nanodegree.popularmovies;
 
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,6 +33,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
