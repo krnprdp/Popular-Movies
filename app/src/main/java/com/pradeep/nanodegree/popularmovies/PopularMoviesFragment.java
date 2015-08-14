@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -25,9 +28,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Pradeep on 8/9/15.
- *
+ * <p/>
  * This fragment makes the API call and loads the Top Movies using a custom Adapter.
- *
  */
 public class PopularMoviesFragment extends Fragment {
 
@@ -36,41 +38,53 @@ public class PopularMoviesFragment extends Fragment {
     private String[] titles = null;
     private String[] posters = null;
     private ArrayList<Movie> movies;
+    GridView gridView;
+    TextView tv;
+    Button btn;
+
     String LOG_TAG = getClass().getSimpleName();
-    Boolean flag;
+    Boolean flag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            movies = new ArrayList<Movie>();
+            flag = false;
+        } else {
+            Log.d(LOG_TAG,"From savedInstanceState - Orientation Change? ");
+            movies = savedInstanceState.getParcelableArrayList("movies");
+            flag = true;
+        }
+
         if (args != null) {
             this.api_key = args.getString("api_key");
 
         } else
             this.api_key = null;
 
-        if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
-            movies = new ArrayList<Movie>();
-            flag = false;
-        } else {
-            movies = savedInstanceState.getParcelableArrayList("movies");
-            flag = true;
-        }
+
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("movies", movies);
+        super.onSaveInstanceState(outState);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_popularmovies, container, false);
 
+        gridView = (GridView) rootView.findViewById(R.id.gridView);
+        tv = (TextView) rootView.findViewById(R.id.tvError);
+        btn = (Button) rootView.findViewById(R.id.btnRefresh);
+
         if (api_key != null) {
 
             if (!flag) {
-                new fetchMovies().execute("POPULARITY"); //TODO: USE A SORT ORDER PARAMETER
+                new fetchMovies().execute("POPULARITY"); //TODO: USE A SORT ORDER PARAMETER - must do
 
             } else {
                 if (movies.size() != 0) {
@@ -80,6 +94,12 @@ public class PopularMoviesFragment extends Fragment {
                         titles[i] = movies.get(i).getTitle();
                         posters[i] = movies.get(i).getPoster();
                     }
+                    gridView.setVisibility(View.VISIBLE);
+                    tv.setVisibility(View.INVISIBLE);
+                    btn.setVisibility(View.INVISIBLE);
+                    MyAdapter adapter = new MyAdapter(getActivity(), titles, posters);
+                    gridView.setAdapter(adapter);
+                    gridView.refreshDrawableState();
                 }
             }
 
@@ -215,6 +235,9 @@ public class PopularMoviesFragment extends Fragment {
                     Log.e(LOG_TAG, e.toString());
                 }
 
+                MyAdapter adapter = new MyAdapter(getActivity(), titles, posters);
+                gridView.setAdapter(adapter);
+                gridView.refreshDrawableState();
 
             }
 
