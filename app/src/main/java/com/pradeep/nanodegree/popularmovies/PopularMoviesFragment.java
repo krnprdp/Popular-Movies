@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -54,7 +55,7 @@ public class PopularMoviesFragment extends Fragment {
             movies = new ArrayList<Movie>();
             flag = false;
         } else {
-            Log.d(LOG_TAG,"From savedInstanceState - Orientation Change? ");
+            Log.d(LOG_TAG, "From savedInstanceState - Orientation Change? ");
             movies = savedInstanceState.getParcelableArrayList("movies");
             flag = true;
         }
@@ -103,6 +104,14 @@ public class PopularMoviesFragment extends Fragment {
                 }
             }
 
+
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    Toast.makeText(getActivity(), titles[position] + " aa", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         } else {
             Toast.makeText(getActivity(), "API Key is Missing.\n" +
@@ -239,6 +248,8 @@ public class PopularMoviesFragment extends Fragment {
                 gridView.setAdapter(adapter);
                 gridView.refreshDrawableState();
 
+            } else {
+                Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_SHORT).show();
             }
 
             progressdialog.dismiss();
