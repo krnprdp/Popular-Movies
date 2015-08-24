@@ -5,12 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /*
  * @author: Pradeep Kiran Chakkirala
  *          krnprdp (at) gmail (dot) com
- *          Created on 8/9/15.
- *
+  *
  * MainActivity Loads the PopularMoviesFragment and also the MovieDetailsFragment.
  *
  * Please do not forget to add the API Key in tmdb.java More information can be seen in that class.
@@ -24,12 +24,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PopularMoviesFragment fragment = new PopularMoviesFragment();
+        if (savedInstanceState == null) {
+            PopularMoviesFragment fragment = new PopularMoviesFragment();
 
-        Bundle bundle = new Bundle();
-        bundle.putString("api_key", tmdb.getKey());
-        fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
+            Bundle bundle = new Bundle();
+            bundle.putString("api_key", tmdb.getKey());
+            fragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragment).commit();
+        }
 
     }
 
@@ -39,9 +41,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onPause() {
+        super.onPause();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,10 +65,32 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        String sortOrder = null;
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_popularity) {
+            sortOrder = "POPULARITY";
+            PopularMoviesFragment fragment = new PopularMoviesFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("api_key", tmdb.getKey());
+            bundle.putString("sort_order", sortOrder);
+            fragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
             return true;
         }
+        if (id == R.id.action_rating) {
+            sortOrder = "vote_count";
+            PopularMoviesFragment fragment = new PopularMoviesFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("api_key", tmdb.getKey());
+            bundle.putString("sort_order", sortOrder);
+            fragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
+            return true;
+        }
+
+
 
         return super.onOptionsItemSelected(item);
     }
