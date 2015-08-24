@@ -1,6 +1,7 @@
 package com.pradeep.nanodegree.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,7 +45,8 @@ public class PopularMoviesFragment extends Fragment {
     Button btn;
 
     String LOG_TAG = getClass().getSimpleName();
-    Boolean flag = false;
+    static Boolean flag;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,14 +56,22 @@ public class PopularMoviesFragment extends Fragment {
         if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
             movies = new ArrayList<Movie>();
             flag = false;
+
         } else {
             Log.d(LOG_TAG, "From savedInstanceState - Orientation Change? ");
             movies = savedInstanceState.getParcelableArrayList("movies");
+
             flag = true;
+
         }
 
         if (args != null) {
             this.api_key = args.getString("api_key");
+            this.sort_order = args.getString("sort_order");
+            if (sort_order == null) {
+                sort_order = "POPULARITY";
+            }
+
 
         } else
             this.api_key = null;
@@ -85,7 +95,7 @@ public class PopularMoviesFragment extends Fragment {
         if (api_key != null) {
 
             if (!flag) {
-                new fetchMovies().execute("POPULARITY"); //TODO: USE A SORT ORDER PARAMETER - must do
+                new fetchMovies().execute(sort_order);
 
             } else {
                 if (movies.size() != 0) {
@@ -109,7 +119,16 @@ public class PopularMoviesFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    Toast.makeText(getActivity(), titles[position] + " aa", Toast.LENGTH_SHORT).show();
+
+                    Intent i = new Intent(getActivity(), MovieDetailsActivity.class);
+                    i.putExtra("id", movies.get(position).getId());
+                    i.putExtra("title", movies.get(position).getTitle());
+                    i.putExtra("poster", movies.get(position).getPoster());
+                    i.putExtra("synopsis", movies.get(position).getSynopsis());
+                    i.putExtra("rating", movies.get(position).getRating());
+                    i.putExtra("release", movies.get(position).getRelease());
+                    startActivity(i);
+
                 }
             });
 
