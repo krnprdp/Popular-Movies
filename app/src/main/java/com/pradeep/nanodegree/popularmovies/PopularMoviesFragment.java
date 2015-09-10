@@ -243,7 +243,7 @@ public class PopularMoviesFragment extends Fragment {
                         JSONObject movie = jsonArray.getJSONObject(i);
 
                         String BASE_URL = "http://image.tmdb.org/t/p/";
-                        String SIZE_PARAM = "w185/";
+                        String SIZE_PARAM = "w342/";
                         Uri uri = Uri.parse(BASE_URL).buildUpon()
                                 .appendEncodedPath(SIZE_PARAM)
                                 .appendEncodedPath(movie.getString("poster_path"))

@@ -7,17 +7,20 @@
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
 
-        <item name="colorPrimary">#009688</item>
+        <item name="colorPrimary">#3F51B5</item>
 
 
-        <item name="colorPrimaryDark">#00796B</item>
+        <item name="colorPrimaryDark">#303F9F</item>
 
 
-        <item name="colorAccent">#8BC34A</item>
+        <item name="colorAccent">#FFC107</item>
+
+
 
         <item name="android:textColorPrimary">#212121</item>
 
         <item name="android:textColorSecondary">#727272</item>
 
     </style>
+
 </resources>

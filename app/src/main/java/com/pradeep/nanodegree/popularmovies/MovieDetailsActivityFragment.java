@@ -1,5 +1,6 @@
 package com.pradeep.nanodegree.popularmovies;
 
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 import com.squareup.picasso.Picasso;
 
@@ -43,6 +45,13 @@ public class MovieDetailsActivityFragment extends Fragment {
         TextView tvSynopsis = (TextView) rootView.findViewById(R.id.tvSynopsis);
         TextView tvRelease = (TextView) rootView.findViewById(R.id.tvRelease);
         TextView tvRating = (TextView) rootView.findViewById(R.id.tvRating);
+
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(title);
+
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) rootView.findViewById(R.id.toolbar);
+
+        toolbar.setTitle(title);
 
         tvTitle.setText(title);
         tvRelease.setText("Release Date: " + release);

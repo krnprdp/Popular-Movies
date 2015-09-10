@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toolbar;
 
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -14,6 +15,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        //getSupportActionBar().hide();
+
 
         Intent i = getIntent();
 
@@ -25,7 +31,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         String release = i.getStringExtra("release");
 
 
-        getSupportActionBar().setTitle(title);
+        getSupportActionBar().hide();
 
 
         Bundle bundle = new Bundle();
