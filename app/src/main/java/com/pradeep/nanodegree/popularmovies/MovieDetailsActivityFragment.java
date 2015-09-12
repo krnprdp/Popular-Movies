@@ -3,6 +3,7 @@ package com.pradeep.nanodegree.popularmovies;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ public class MovieDetailsActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         Bundle args = getArguments();
         id = args.getString("id");
         poster = args.getString("poster");
@@ -42,21 +45,21 @@ public class MovieDetailsActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
         TextView tvTitle = (TextView) rootView.findViewById(R.id.tvTitle);
-        TextView tvSynopsis = (TextView) rootView.findViewById(R.id.tvSynopsis);
+        //TextView tvSynopsis = (TextView) rootView.findViewById(R.id.tvSynopsis);
         TextView tvRelease = (TextView) rootView.findViewById(R.id.tvRelease);
         TextView tvRating = (TextView) rootView.findViewById(R.id.tvRating);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(title);
+        //CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar);
+        //collapsingToolbarLayout.setTitle(title);
 
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) rootView.findViewById(R.id.toolbar);
-
-        toolbar.setTitle(title);
-
+        //android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) rootView.findViewById(R.id.toolbar);
+        //((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        //toolbar.setTitle(title);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
         tvTitle.setText(title);
         tvRelease.setText("Release Date: " + release);
         tvRating.setText("Rating: " + rating + "/10");
-        tvSynopsis.setText("Synopsis:\n" + synopsis);
+        //tvSynopsis.setText("Synopsis:\n" + synopsis);
         ImageView ivPoster = (ImageView) rootView.findViewById(R.id.ivPoster);
 
         Picasso.with(getActivity()).load(poster).into(ivPoster);
