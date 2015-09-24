@@ -27,6 +27,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.pradeep.nanodegree.popularmovies.MainActivity" />
         </activity>
+
+        <provider
+            android:name="com.pradeep.nanodegree.popularmovies.FavoritesProvider"
+            android:authorities="com.pradeep.nanodegree.popularmovies.provider" />
     </application>
 
 </manifest>
