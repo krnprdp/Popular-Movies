@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.squareup.picasso.Picasso;
@@ -35,6 +37,9 @@ import java.net.URL;
 public class MovieDetailsActivityFragment extends Fragment {
 
     String id = "", poster = "", title = "", synopsis = "", rating = "", release = "";
+
+    TextView tvTitle, tvSynopsis, tvRelease, tvRating, tvReviews;
+    ImageButton favorite;
 
     public MovieDetailsActivityFragment() {
     }
@@ -60,11 +65,19 @@ public class MovieDetailsActivityFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
-        TextView tvTitle = (TextView) rootView.findViewById(R.id.tvTitle);
-        TextView tvSynopsis = (TextView) rootView.findViewById(R.id.tvSynopsis);
-        TextView tvRelease = (TextView) rootView.findViewById(R.id.tvRelease);
-        TextView tvRating = (TextView) rootView.findViewById(R.id.tvRating);
+        tvTitle = (TextView) rootView.findViewById(R.id.tvTitle);
+        tvSynopsis = (TextView) rootView.findViewById(R.id.tvSynopsis);
+        tvRelease = (TextView) rootView.findViewById(R.id.tvRelease);
+        tvRating = (TextView) rootView.findViewById(R.id.tvRating);
+        tvReviews = (TextView) rootView.findViewById(R.id.tvReviews);
+        favorite = (ImageButton) rootView.findViewById(R.id.favorite);
 
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Favourite Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
         tvTitle.setText(title);
@@ -99,22 +112,20 @@ public class MovieDetailsActivityFragment extends Fragment {
             String movie_id = params[0];
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-            String jsonResponse = null, jsonResponse2 = null;
             StringBuffer stringBuffer;
+            String jsonResponse = null;
 
             String BASE_URL = "http://api.themoviedb.org/3/movie/";
-            String videos_endpoint = "videos";
-            String reviews_endpoint = "videos";
             String API_PARAM = "api_key";
 
             try {
                 Uri uri = Uri.parse(BASE_URL).buildUpon()
                         .appendPath(movie_id)
-                        .appendPath(videos_endpoint)
                         .appendQueryParameter(API_PARAM, tmdb.getKey())
+                        .appendQueryParameter("append_to_response", "reviews")
                         .build();
 
-                URL url = new URL(uri.toString());
+                URL url = new URL(uri.toString() + ",trailers");
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -143,37 +154,6 @@ public class MovieDetailsActivityFragment extends Fragment {
                 Log.d("MovieDetailsFragment", "Built URL: " + url);
                 Log.d("MovieDetailsFragment", "JSONrespone: " + jsonResponse);
 
-                Uri uri2 = Uri.parse(BASE_URL).buildUpon()
-                        .appendPath(movie_id)
-                        .appendPath(reviews_endpoint)
-                        .appendQueryParameter(API_PARAM, tmdb.getKey())
-                        .build();
-
-                URL url2 = new URL(uri2.toString());
-
-                urlConnection = (HttpURLConnection) url2.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream2 = urlConnection.getInputStream();
-
-                if (inputStream2 == null) {
-                    return null;
-                }
-
-                reader = new BufferedReader(new InputStreamReader(inputStream2));
-                stringBuffer = new StringBuffer();
-                String line2;
-
-                while ((line2 = reader.readLine()) != null) {
-                    stringBuffer.append(line2 + "\n");
-                }
-
-                if (stringBuffer.length() == 0) {
-                    return null;
-                }
-                jsonResponse2 = stringBuffer.toString();
-
 
             } catch (MalformedURLException e) {
                 Log.e("MovieDetailsFragment", e.toString());
@@ -200,14 +180,19 @@ public class MovieDetailsActivityFragment extends Fragment {
 
             try {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
-                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                JSONArray reviews = (JSONArray) ((JSONObject) jsonObject.get("reviews")).get("results");
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                String appended_review = "Reviews\n";
 
-                    JSONObject movie = jsonArray.getJSONObject(i);
-
-                    Log.d("MovieDetailsFragment", "Trailer " + i + " " + movie.get("key"));
+                for (int i = 0; i < reviews.length(); i++) {
+                    appended_review += (i + 1) + ". " + reviews.getJSONObject(i).get("content").toString() + "\n-- " + reviews.getJSONObject(i).get("author").toString();
+                    if (i != reviews.length() - 1)
+                        appended_review += "\n\n";
                 }
+
+                tvReviews.setText(appended_review);
+
+                Log.d("MovieDetailsFragment", reviews.toString());
 
             } catch (JSONException e) {
                 Log.e("MovieDetailsFragment", e.toString());
