@@ -182,7 +182,7 @@ public class MovieDetailsActivityFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
                 JSONArray reviews = (JSONArray) ((JSONObject) jsonObject.get("reviews")).get("results");
 
-                String appended_review = "Reviews\n";
+                String appended_review = "Reviews:\n";
 
                 for (int i = 0; i < reviews.length(); i++) {
                     appended_review += (i + 1) + ". " + reviews.getJSONObject(i).get("content").toString() + "\n-- " + reviews.getJSONObject(i).get("author").toString();
