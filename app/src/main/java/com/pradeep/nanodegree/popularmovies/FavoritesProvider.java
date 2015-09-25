@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+
 /**
  * Created by Pradeep on 9/23/15.
  */
@@ -22,7 +23,7 @@ public class FavoritesProvider extends ContentProvider {
     public boolean onCreate() {
         helper = new DBHelper(getContext());
         sqlDB = helper.getWritableDatabase();
-        Log.d("FavoritesProvider", "Content Provider is working - sort of? **************************\n\n**************************");
+
         if (sqlDB == null)
             return false;
         else
@@ -31,7 +32,12 @@ public class FavoritesProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
-        return null;
+
+        Cursor cursor = sqlDB.rawQuery("Select * from FavouriteMovies where id = '" + s + "'", null);
+        Log.d("No. of rows ret", Integer.toString(cursor.getCount()));
+        if (cursor.getCount() != 0)
+            return cursor;
+        else return null;
     }
 
     @Override
@@ -41,7 +47,14 @@ public class FavoritesProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        return null;
+
+        long row = sqlDB.insert("FavouriteMovies", null, contentValues);
+
+        if (row > 0) {
+            Log.d("insert", contentValues.toString());
+            return uri;
+        } else
+            return null;
     }
 
     @Override
