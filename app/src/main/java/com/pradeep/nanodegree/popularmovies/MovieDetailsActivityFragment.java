@@ -1,6 +1,9 @@
 package com.pradeep.nanodegree.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -40,6 +43,10 @@ public class MovieDetailsActivityFragment extends Fragment {
 
     TextView tvTitle, tvSynopsis, tvRelease, tvRating, tvReviews;
     ImageButton favorite;
+    boolean fav_set = false;
+
+    Uri uri = Uri.parse("content://com.pradeep.nanodegree.popularmovies.provider");
+    ContentResolver resolver;
 
     public MovieDetailsActivityFragment() {
     }
@@ -63,7 +70,7 @@ public class MovieDetailsActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        resolver = getActivity().getContentResolver();
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
         tvTitle = (TextView) rootView.findViewById(R.id.tvTitle);
         tvSynopsis = (TextView) rootView.findViewById(R.id.tvSynopsis);
@@ -72,10 +79,36 @@ public class MovieDetailsActivityFragment extends Fragment {
         tvReviews = (TextView) rootView.findViewById(R.id.tvReviews);
         favorite = (ImageButton) rootView.findViewById(R.id.favorite);
 
+        Cursor resultCursor = resolver.query(uri, null,
+                id, null, null);
+
+
+        if (resultCursor != null) {
+            favorite.setBackgroundResource(R.mipmap.ic_star_black_24dp);
+            fav_set = true;
+        }
+
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Favourite Clicked", Toast.LENGTH_SHORT).show();
+
+                if (!fav_set) {
+                    ContentValues cv = new ContentValues();
+                    cv.put("id", id);
+                    cv.put("title", title);
+                    cv.put("poster", poster);
+                    cv.put("synopsis", synopsis);
+                    cv.put("rating", rating);
+                    cv.put("release", release);
+                    favorite.setBackgroundResource(R.mipmap.ic_star_black_24dp);
+                    resolver.insert(uri, cv);
+                    fav_set = true;
+                } else {
+                    favorite.setBackgroundResource(R.mipmap.ic_star_border_black_24dp);
+                    resolver.delete(uri, id, null);
+                    fav_set = false;
+                }
+
             }
         });
 
