@@ -1,12 +1,13 @@
 package com.pradeep.nanodegree.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +45,9 @@ public class MovieDetailsActivityFragment extends Fragment {
 
     TextView tvTitle, tvSynopsis, tvRelease, tvRating, tvReviews;
     ImageButton favorite;
+    LinearLayout trailer1, trailer2;
     boolean fav_set = false;
+    String t1 = null, t2 = null;
 
     Uri uri = Uri.parse("content://com.pradeep.nanodegree.popularmovies.provider");
     ContentResolver resolver;
@@ -78,6 +82,10 @@ public class MovieDetailsActivityFragment extends Fragment {
         tvRating = (TextView) rootView.findViewById(R.id.tvRating);
         tvReviews = (TextView) rootView.findViewById(R.id.tvReviews);
         favorite = (ImageButton) rootView.findViewById(R.id.favorite);
+
+
+        trailer1 = (LinearLayout) rootView.findViewById(R.id.trailer1);
+        trailer2 = (LinearLayout) rootView.findViewById(R.id.trailer2);
 
         Cursor resultCursor = resolver.query(uri, null,
                 id, null, null);
@@ -116,7 +124,7 @@ public class MovieDetailsActivityFragment extends Fragment {
         tvTitle.setText(title);
         tvRelease.setText("Release Date: " + release);
         tvRating.setText("Rating: " + rating + "/10");
-        tvSynopsis.setText("Synopsis:\n" + synopsis);
+        tvSynopsis.setText("\n" + synopsis);
         ImageView ivPoster = (ImageView) rootView.findViewById(R.id.ivPoster);
 
         Picasso.with(getActivity()).load(poster).into(ivPoster);
@@ -215,7 +223,7 @@ public class MovieDetailsActivityFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
                 JSONArray reviews = (JSONArray) ((JSONObject) jsonObject.get("reviews")).get("results");
 
-                String appended_review = "Reviews:\n";
+                String appended_review = "\n";
 
                 for (int i = 0; i < reviews.length(); i++) {
                     appended_review += (i + 1) + ". " + reviews.getJSONObject(i).get("content").toString() + "\n-- " + reviews.getJSONObject(i).get("author").toString();
@@ -225,7 +233,52 @@ public class MovieDetailsActivityFragment extends Fragment {
 
                 tvReviews.setText(appended_review);
 
-                Log.d("MovieDetailsFragment", reviews.toString());
+
+                JSONArray trailers = (JSONArray) ((JSONObject) jsonObject.get("trailers")).get("youtube");
+
+
+                if (trailers.length() >= 2) {
+                    t1 = trailers.getJSONObject(0).getString("source");
+                    t2 = trailers.getJSONObject(1).getString("source");
+                } else if (trailers.length() == 1) {
+                    t1 = trailers.getJSONObject(0).getString("source");
+                }
+
+                trailer1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (t1 == null)
+                            Toast.makeText(getActivity(), "No Trailers For this movie", Toast.LENGTH_SHORT).show();
+                        else {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + t1));
+                                getActivity().startActivity(intent);
+                            } catch (ActivityNotFoundException ex) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("http://www.youtube.com/watch?v=" + t1));
+                                getActivity().startActivity(intent);
+                            }
+                        }
+                    }
+                });
+
+                trailer2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (t2 == null)
+                            Toast.makeText(getActivity(), "No more Trailers For this movie", Toast.LENGTH_SHORT).show();
+                        else {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + t2));
+                                getActivity().startActivity(intent);
+                            } catch (ActivityNotFoundException ex) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("http://www.youtube.com/watch?v=" + t2));
+                                getActivity().startActivity(intent);
+                            }
+                        }
+                    }
+                });
 
             } catch (JSONException e) {
                 Log.e("MovieDetailsFragment", e.toString());
