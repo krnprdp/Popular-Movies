@@ -33,11 +33,19 @@ public class FavoritesProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
 
-        Cursor cursor = sqlDB.rawQuery("Select * from FavouriteMovies where id = '" + s + "'", null);
-        Log.d("No. of rows ret", Integer.toString(cursor.getCount()));
+        Cursor cursor = null;
+        if (s.contains("@")) {
+            cursor = sqlDB.query("FavouriteMovies", null, null, null, null, null, null);
+            Log.d("No. of rows ret", Integer.toString(cursor.getCount()));
+        } else {
+            cursor = sqlDB.rawQuery("Select * from FavouriteMovies where id = '" + s + "'", null);
+            Log.d("No. of rows ret", Integer.toString(cursor.getCount()));
+        }
+
         if (cursor.getCount() != 0)
             return cursor;
-        else return null;
+        else
+            return null;
     }
 
     @Override
