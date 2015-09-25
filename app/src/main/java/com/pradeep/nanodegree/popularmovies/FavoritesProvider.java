@@ -67,6 +67,9 @@ public class FavoritesProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String s, String[] strings) {
+        String whereClause = "id" + "=?";
+        String[] whereArgs = new String[]{String.valueOf(s)};
+        sqlDB.delete("FavouriteMovies", whereClause, whereArgs);
         return 0;
     }
 

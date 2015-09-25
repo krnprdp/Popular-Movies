@@ -1,7 +1,9 @@
 package com.pradeep.nanodegree.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,7 +45,8 @@ public class PopularMoviesFragment extends Fragment {
     GridView gridView;
     TextView tv;
     Button btn;
-
+    ContentResolver resolver;
+    Uri uri = Uri.parse("content://com.pradeep.nanodegree.popularmovies.provider");
     String LOG_TAG = getClass().getSimpleName();
     static Boolean flag;
 
@@ -92,9 +95,51 @@ public class PopularMoviesFragment extends Fragment {
         tv = (TextView) rootView.findViewById(R.id.tvError);
         btn = (Button) rootView.findViewById(R.id.btnRefresh);
 
-        if (api_key != null) {
+        resolver = getActivity().getContentResolver();
 
-            if (!flag) {
+        if (api_key != null) {
+            if (sort_order == "favourites") {
+
+                Cursor resultCursor = resolver.query(uri, null,
+                        "@", null, null);
+
+                resultCursor.moveToFirst();
+
+                if (resultCursor.getCount() > 0) {
+
+                    titles = new String[resultCursor.getCount()];
+                    posters = new String[resultCursor.getCount()];
+
+                    int i = 0;
+                    while (!resultCursor.isAfterLast()) {
+
+                        String id = resultCursor.getString(resultCursor.getColumnIndex("id"));
+                        String title = resultCursor.getString(resultCursor.getColumnIndex("title"));
+                        String poster = resultCursor.getString(resultCursor.getColumnIndex("poster"));
+                        String synopsis = resultCursor.getString(resultCursor.getColumnIndex("synopsis"));
+                        String rating = resultCursor.getString(resultCursor.getColumnIndex("rating"));
+                        String release = resultCursor.getString(resultCursor.getColumnIndex("release"));
+                        String BASE_URL = "http://image.tmdb.org/t/p/";
+                        String SIZE_PARAM = "w342/";
+                        Uri uri = Uri.parse(BASE_URL).buildUpon()
+                                .appendEncodedPath(SIZE_PARAM)
+                                .appendEncodedPath(poster)
+                                .build();
+                        movies.add(new Movie(id, title, poster, rating, release, synopsis));
+                        titles[i] = title;
+                        posters[i] = poster;
+                        i++;
+                        resultCursor.moveToNext();
+                    }
+
+                    MyAdapter adapter = new MyAdapter(getActivity(), titles, posters);
+                    gridView.setAdapter(adapter);
+                    gridView.refreshDrawableState();
+                } else {
+                    Toast.makeText(getActivity(), "UhOH! You do not have any Movies as your Favourites yet", Toast.LENGTH_LONG).show();
+                }
+
+            } else if (!flag) {
                 new fetchMovies().execute(sort_order);
 
             } else {
@@ -205,7 +250,7 @@ public class PopularMoviesFragment extends Fragment {
 
                 jsonResponse = stringBuffer.toString();
 
-                Log.d(LOG_TAG, "JSON RESPONSE:\n" + jsonResponse);
+//                Log.d(LOG_TAG, "JSON RESPONSE:\n" + jsonResponse);
 
 
             } catch (IOException e) {
@@ -255,7 +300,7 @@ public class PopularMoviesFragment extends Fragment {
 
                         titles[i] = movies.get(i).getTitle();
                         posters[i] = movies.get(i).getPoster();
-                        Log.d(LOG_TAG, movies.get(i).toString());
+//                        Log.d(LOG_TAG, movies.get(i).toString());
                     }
 
 
