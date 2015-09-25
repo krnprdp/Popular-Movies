@@ -103,10 +103,9 @@ public class PopularMoviesFragment extends Fragment {
                 Cursor resultCursor = resolver.query(uri, null,
                         "@", null, null);
 
-                resultCursor.moveToFirst();
 
-                if (resultCursor.getCount() > 0) {
-
+                if (resultCursor != null) {
+                    resultCursor.moveToFirst();
                     titles = new String[resultCursor.getCount()];
                     posters = new String[resultCursor.getCount()];
 
