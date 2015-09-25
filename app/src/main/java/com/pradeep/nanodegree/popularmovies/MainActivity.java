@@ -64,34 +64,27 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        String sortOrder = null;
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_popularity) {
-            sortOrder = "POPULARITY";
+        if (id != R.id.action_sort) {
+            String sortOrder = null;
             PopularMoviesFragment fragment = new PopularMoviesFragment();
-
             Bundle bundle = new Bundle();
             bundle.putString("api_key", tmdb.getKey());
+            switch (id) {
+                case R.id.action_popularity:
+                    sortOrder = "POPULARITY";
+                    break;
+                case R.id.action_rating:
+                    sortOrder = "vote_count";
+                    break;
+                case R.id.action_favourites:
+                    sortOrder = "favourites";
+                    break;
+            }
             bundle.putString("sort_order", sortOrder);
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
             return true;
         }
-        if (id == R.id.action_rating) {
-            sortOrder = "vote_count";
-            PopularMoviesFragment fragment = new PopularMoviesFragment();
-
-            Bundle bundle = new Bundle();
-            bundle.putString("api_key", tmdb.getKey());
-            bundle.putString("sort_order", sortOrder);
-            fragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
-            return true;
-        }
-
-
-
         return super.onOptionsItemSelected(item);
     }
 }
