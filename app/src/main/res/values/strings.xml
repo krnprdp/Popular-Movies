@@ -5,6 +5,7 @@
     <string name="action_sort">Sort</string>
     <string name="action_popularity">Popularity</string>
     <string name="action_rating">Rating</string>
+    <string name="action_favourites">My Favourites</string>
     <string name="error_message">Contacting Hollywood</string>
     <string name="progress_title">Loading..</string>
     <string name="progress_message">Contacting Hollywood</string>
