@@ -76,11 +76,10 @@
                 <TextView
                     android:id="@+id/synopsisTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
+                    android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="Synopsis"
-                    android:textColor="@android:color/white"
-                    android:textSize="14dp" />
+                    android:text="Synopsis:"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/tvSynopsis"
@@ -97,14 +96,87 @@
                 app:cardElevation="@dimen/spacing_medium"
                 app:cardUseCompatPadding="true">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/trailersTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="Trailers:"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <LinearLayout
+                        android:id="@+id/trailer1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:clickable="true"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/ivYoutube"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:padding="2dp"
+                            android:scaleType="centerCrop"
+                            android:src="@mipmap/youtube_icon" />
+
+                        <TextView
+                            android:id="@+id/trailer1text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Trailer 1"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/trailer2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:clickable="true"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/ivYoutube2"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:padding="2dp"
+                            android:scaleType="centerCrop"
+                            android:src="@mipmap/youtube_icon" />
+
+                        <TextView
+                            android:id="@+id/trailer2text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="Trailer 2"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="@dimen/spacing_medium"
+                app:cardUseCompatPadding="true">
+
                 <TextView
                     android:id="@+id/reviewsTitle"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
+                    android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="Reviews"
-                    android:textColor="@android:color/white"
-                    android:textSize="14dp" />
+                    android:text="Reviews:"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/tvReviews"
