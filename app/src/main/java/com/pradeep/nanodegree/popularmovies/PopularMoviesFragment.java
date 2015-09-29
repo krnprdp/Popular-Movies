@@ -173,7 +173,7 @@ public class PopularMoviesFragment extends Fragment {
                         i.putExtra("release", movies.get(position).getRelease());
                         startActivity(i);
                     } else {
-                        
+
                         Bundle bundle = new Bundle();
                         bundle.putString("id", movies.get(position).getId());
                         bundle.putString("title", movies.get(position).getTitle());
