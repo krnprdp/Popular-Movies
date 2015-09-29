@@ -34,7 +34,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         MovieDetailsActivityFragment fragment = new MovieDetailsActivityFragment();
         fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, fragment).commit();
 
     }
 

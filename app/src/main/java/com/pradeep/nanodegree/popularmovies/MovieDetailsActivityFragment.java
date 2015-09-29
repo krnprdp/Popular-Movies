@@ -41,7 +41,7 @@ import java.net.URL;
  */
 public class MovieDetailsActivityFragment extends Fragment {
 
-    String id = "", poster = "", title = "", synopsis = "", rating = "", release = "";
+    String id = null, poster = null, title = null, synopsis = null, rating = null, release = null;
 
     TextView tvTitle, tvSynopsis, tvRelease, tvRating, tvReviews;
     ImageButton favorite;
@@ -61,13 +61,14 @@ public class MovieDetailsActivityFragment extends Fragment {
 
 
         Bundle args = getArguments();
-        id = args.getString("id");
-        poster = args.getString("poster");
-        title = args.getString("title");
-        synopsis = args.getString("synopsis");
-        rating = args.getString("rating");
-        release = args.getString("release");
-
+        if (args != null) {
+            id = args.getString("id");
+            poster = args.getString("poster");
+            title = args.getString("title");
+            synopsis = args.getString("synopsis");
+            rating = args.getString("rating");
+            release = args.getString("release");
+        }
     }
 
     @Override
@@ -87,15 +88,16 @@ public class MovieDetailsActivityFragment extends Fragment {
         trailer1 = (LinearLayout) rootView.findViewById(R.id.trailer1);
         trailer2 = (LinearLayout) rootView.findViewById(R.id.trailer2);
 
-        Cursor resultCursor = resolver.query(uri, null,
-                id, null, null);
+        if (id != null) {
+            Cursor resultCursor = resolver.query(uri, null,
+                    id, null, null);
 
 
-        if (resultCursor != null) {
-            favorite.setBackgroundResource(R.mipmap.ic_star_black_24dp);
-            fav_set = true;
+            if (resultCursor != null) {
+                favorite.setBackgroundResource(R.mipmap.ic_star_black_24dp);
+                fav_set = true;
+            }
         }
-
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,10 +129,12 @@ public class MovieDetailsActivityFragment extends Fragment {
         tvSynopsis.setText("\n" + synopsis);
         ImageView ivPoster = (ImageView) rootView.findViewById(R.id.ivPoster);
 
-        Picasso.with(getActivity()).load(poster).into(ivPoster);
 
-        new loadTrailersandReviews().execute(id);
+        if (poster != null) {
+            Picasso.with(getActivity()).load(poster).into(ivPoster);
 
+            new loadTrailersandReviews().execute(id);
+        }
         return rootView;
     }
 
@@ -217,7 +221,7 @@ public class MovieDetailsActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(String jsonResponse) {
             super.onPostExecute(jsonResponse);
-            progressdialog.dismiss();
+
 
             try {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
@@ -283,6 +287,8 @@ public class MovieDetailsActivityFragment extends Fragment {
             } catch (JSONException e) {
                 Log.e("MovieDetailsFragment", e.toString());
             }
+
+            progressdialog.dismiss();
         }
 
 

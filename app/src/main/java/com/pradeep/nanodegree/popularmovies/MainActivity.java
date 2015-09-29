@@ -33,6 +33,19 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragment).commit();
         }
 
+        if(findViewById(R.id.fragment2)!=null){
+        // Two Pane Layout
+            if(savedInstanceState == null){
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment2, new MovieDetailsActivityFragment(), "DETAILS_FRAGMENT")
+                        .commit();
+
+            }
+
+        }else{
+            // Single Pane Layout
+        }
+
     }
 
     @Override

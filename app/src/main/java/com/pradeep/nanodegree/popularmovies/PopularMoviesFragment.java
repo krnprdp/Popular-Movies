@@ -76,10 +76,10 @@ public class PopularMoviesFragment extends Fragment {
             }
 
 
-        } else
-            this.api_key = null;
-
-
+        } else {
+            this.api_key = tmdb.getKey(); // In case of tablet mode
+            sort_order = "POPULARITY";
+        }
     }
 
     @Override
@@ -163,16 +163,33 @@ public class PopularMoviesFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                    if (getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment2) == null) {
+                        Intent i = new Intent(getActivity(), MovieDetailsActivity.class);
+                        i.putExtra("id", movies.get(position).getId());
+                        i.putExtra("title", movies.get(position).getTitle());
+                        i.putExtra("poster", movies.get(position).getPoster());
+                        i.putExtra("synopsis", movies.get(position).getSynopsis());
+                        i.putExtra("rating", movies.get(position).getRating());
+                        i.putExtra("release", movies.get(position).getRelease());
+                        startActivity(i);
+                    } else {
+                        
+                        Bundle bundle = new Bundle();
+                        bundle.putString("id", movies.get(position).getId());
+                        bundle.putString("title", movies.get(position).getTitle());
+                        bundle.putString("poster", movies.get(position).getPoster());
+                        bundle.putString("synopsis", movies.get(position).getSynopsis());
+                        bundle.putString("rating", movies.get(position).getRating());
+                        bundle.putString("release", movies.get(position).getRelease());
 
-                    Intent i = new Intent(getActivity(), MovieDetailsActivity.class);
-                    i.putExtra("id", movies.get(position).getId());
-                    i.putExtra("title", movies.get(position).getTitle());
-                    i.putExtra("poster", movies.get(position).getPoster());
-                    i.putExtra("synopsis", movies.get(position).getSynopsis());
-                    i.putExtra("rating", movies.get(position).getRating());
-                    i.putExtra("release", movies.get(position).getRelease());
-                    startActivity(i);
+                        MovieDetailsActivityFragment fragment = new MovieDetailsActivityFragment();
+                        fragment.setArguments(bundle);
 
+
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment2, fragment, "DETAILS_FRAGMENT")
+                                .commit();
+                    }
                 }
             });
 
